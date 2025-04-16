@@ -1,95 +1,96 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
+import "./home.css";
+import Footer from "./components/Footer/Footer";
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import CustomEase from "gsap/CustomEase";
+
+let isInitialLoad = true;
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const containerRef = useRef(null);
+  const preloaderRef = useRef(null);
+  const progressBarRef = useRef(null);
+  const [showPreloader, setShowPreloader] = useState(isInitialLoad);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  useLayoutEffect(() => {
+    gsap.registerPlugin(CustomEase);
+    CustomEase.create(
+      "hop-main",
+      "M0,0 C0.354,0 0.464,0.133 0.498,0.502 0.532,0.872 0.651,1 1,1"
+    );
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      isInitialLoad = false;
+    };
+  }, []);
+
+  useGSAP(
+    () => {
+      if (showPreloader) {
+        const tl = gsap.timeline({
+          onComplete: () => setShowPreloader(false),
+        });
+
+        tl.to(progressBarRef.current, {
+          scaleX: 1,
+          duration: 4,
+          ease: "power1.inOut",
+        });
+
+        tl.set(progressBarRef.current, { transformOrigin: "right" }).to(
+          progressBarRef.current,
+          {
+            scaleX: 0,
+            duration: 1,
+            ease: "power2.in",
+          }
+        );
+
+        tl.to(preloaderRef.current, {
+          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+          duration: 1.5,
+          ease: "hop-main",
+        });
+      }
+
+      gsap.to(".hero-title .line h1", {
+        y: 0,
+        stagger: 0.1,
+        delay: showPreloader ? 5.75 : 1,
+        duration: 1.5,
+        ease: "power4.out",
+      });
+    },
+    { scope: containerRef, dependencies: [showPreloader] }
+  );
+
+  return (
+    <>
+      {showPreloader && (
+        <div className="pre-loader" ref={preloaderRef}>
+          <div className="progress-bar" ref={progressBarRef}></div>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      )}
+      <div className="home-page" ref={containerRef}>
+        <div className="hero-img">
+          <img src="/home/hero-img.jpg" alt="" />
+        </div>
+
+        <div className="hero-title">
+          <div className="line">
+            <h1>A student developer</h1>
+          </div>
+          <div className="line">
+            <h1>based in Brussels</h1>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 }
