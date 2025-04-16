@@ -167,14 +167,16 @@ const AboutPage = () => {
               </div>
 
               <div className="about-copy" ref={aboutCopyRef}>
-                <h3>Passionate about UX/UI design and web development...</h3>
-                <br />
                 <h3>
-                  With a strong background in front-end development...
+                Passionate about UX/UI design and web development, I’m currently completing my bachelor’s degree at Albert Jacquard School. My work blends creativity and technical expertise to craft immersive digital experiences, always focusing on usability, aesthetics, and innovation.
                 </h3>
                 <br />
                 <h3>
-                  Beyond coding, I have a deep passion for outdoor adventures...
+                With a strong background in front-end development, I enjoy turning ideas into interactive and engaging interfaces. I’m constantly exploring new technologies to enhance user experiences. My goal is to create intuitive designs that seamlessly connect users with the digital world.
+                </h3>
+                <br />
+                <h3>
+                Beyond coding, I have a deep passion for outdoor adventures and sports. My experiences in sports inspire my creative approach, emphasizing exploration and adaptability. I’m eager to collaborate on projects that challenge me to push boundaries and redefine digital experiences.
                 </h3>
               </div>
             </div>
